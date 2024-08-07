@@ -6,6 +6,7 @@ import Alert from "@mui/material/Alert";
 import LinearProgress from "@mui/material/LinearProgress";
 import domain from "./domain";
 import axios from "axios";
+import { anonAadhaarDomain } from "./domain";
 
 const RegisterCompany = () => {
   const [formValues, setFormValues] = useState({
@@ -63,7 +64,6 @@ const RegisterCompany = () => {
       const data = res.data;
       setProgress(false);
 
-      // TODO
       if (data.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("username", formValues.username);
@@ -72,7 +72,17 @@ const RegisterCompany = () => {
         if (isHR) {
           navigate("/hr-dashboard");
         } else {
-          navigate("/employee-dashboard");
+          const aadhaarStatus = await axios.get(`${domain}/aadhaar`, {
+            headers: {
+              Authorization: `Bearer ${data.token}`,
+            },
+          });
+
+          if (aadhaarStatus.data.data.status) {
+            navigate("/employee-dashboard");
+          } else {
+            window.location.href = anonAadhaarDomain;
+          }
         }
       } else {
         setErrorMsg("Wrong Credentials !!");

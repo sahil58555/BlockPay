@@ -55,7 +55,7 @@ const AddEmployee = () => {
           },
         }
       );
-      setSuccessMsg("Transaction successfull");
+      setSuccessMsg("We have initiated your transaction and will complete it within 10-20 minutes. If the transaction fails within this timeframe, the payment will be returned to your account.");
       setFormValues(defaultValues);
     } catch (err) {
       setErrorMsg("Transaction Failed !!");

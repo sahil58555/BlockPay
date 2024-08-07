@@ -15,6 +15,7 @@ const adminRouter = require("./routes/adminRouter");
 const authRouter = require("./Controllers/authController");
 const employeeRouter = require("./routes/employeeRouter");
 const financeRouter = require("./routes/financeRouter");
+const aadharRouter = require("./routes/aadharRouter");
 
 app.use("/login", loginRouter);
 app.use("/register", registerRouter);
@@ -25,7 +26,18 @@ app.use(
   authRouter.checkForEmployee,
   employeeRouter
 );
-app.use("/finance", authRouter.isLoggedIn, authRouter.checkForHR, financeRouter);
+app.use(
+  "/finance",
+  authRouter.isLoggedIn,
+  authRouter.checkForHR,
+  financeRouter
+);
+app.use(
+  "/aadhaar",
+  authRouter.isLoggedIn,
+  authRouter.checkForEmployee,
+  aadharRouter
+);
 
 //  404 handler middleware
 app.use((req, res, next) => {

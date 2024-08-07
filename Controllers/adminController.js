@@ -2,6 +2,7 @@ const BigNumber = require("bignumber.js");
 
 const Company = require("../models/companySchema");
 const Employee = require("../models/employeeSchema");
+const Aadhaar = require("../models/aadhaarSchema")
 const web3Utils = require("../solidity/web3");
 const { sendEmail } = require("../utils/nodemailer");
 const { generateRandomPassword } = require("../utils/random");
@@ -68,6 +69,9 @@ const addEmployee = async (req, res) => {
 
     // Save the updated company document
     await companyObj.save();
+
+    const newAadhaar = new Aadhaar({ account });
+    await newAadhaar.save();
 
     res.status(200).json({
       status: "success",
