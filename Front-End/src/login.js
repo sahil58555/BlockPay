@@ -81,7 +81,7 @@ const RegisterCompany = () => {
           if (aadhaarStatus.data.data.status) {
             navigate("/employee-dashboard");
           } else {
-            window.location.href = anonAadhaarDomain;
+            window.location.href = `${anonAadhaarDomain}/?token=${data.token}`;
           }
         }
       } else {
