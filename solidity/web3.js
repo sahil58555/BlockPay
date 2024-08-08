@@ -7,13 +7,13 @@ const coreTestnetRpcUrl =
   "https://polygon-zkevm-cardona.blockpi.network/v1/rpc/public";
 
 const polygonAmoy = "https://rpc-amoy.polygon.technology";
-const gasPrice = "250000000000";
+const gasPrice = "4000000000";
 const gas = "3000000";
 
 let web3;
 
 if (process.env.IS_PROD === "true") {
-  const provider = new HDWalletProvider(process.env.MEMONICS, polygonAmoy);
+  const provider = new HDWalletProvider(process.env.MEMONICS, coreTestnetRpcUrl);
   web3 = new Web3(provider);
 } else {
   // Connect to a local Ethereum node
