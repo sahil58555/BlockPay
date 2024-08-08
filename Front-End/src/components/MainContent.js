@@ -138,16 +138,20 @@ const MainContent = ({ logo, children, salaries, salary, account }) => {
             />
             <h2>Bitcoin</h2>
             <h3>BTC</h3>
-            <div className="currency-button-bitcoin">
-              <button onClick={() => navigate("/btc-to-wbtc")}>
-                Convert your currency
-              </button>
-            </div>
           </div>
-          <div className="watchlist-bitcoin">
-            <span id="rank">Rank #1</span>
-            <span>Coin</span>
-            <span>On 2,771,773 watchlists</span>
+          <div className="currency-button-bitcoin flex-around">
+            <button
+              className="emp-btn-color"
+              onClick={() => navigate("/btc-to-wbtc")}
+            >
+              Swap your currency
+            </button>
+            <button
+              className="emp-btn-color"
+              onClick={() => window.location.href = 'https://onramp.money/main/sell/?appId=1'}
+            >
+              Withdraw in Fiat
+            </button>
           </div>
           <div className="price-bitcoin">
             <h1>$43,975.72</h1>

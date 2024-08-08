@@ -458,7 +458,6 @@ const Dashboard = () => {
         }
         
         .currency-button-bitcoin button {
-          background: #eff2f40a;
           color: white;
           border: none;
           padding: 10px 20px;
@@ -467,11 +466,28 @@ const Dashboard = () => {
           border-color: #007bff;
           cursor: pointer;
           font-family: Poppins;
-          font-size: 13.01px;
           font-weight: 400;
           line-height: 18px;
           text-align: center;
         }
+
+        .flex-around {
+          display: flex;
+          justify-content: space-around;
+          margin-top: 10px;
+        }
+
+        .emp-btn-color {
+          background-color: cornflowerblue;
+          font-size: medium;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+
+        .emp-btn-color:hover {
+          background-color: blue; /* Change background color on hover */
+        }
+
         #rank {
           padding: 5px;
           background-color: #eff2f40a;
@@ -587,8 +603,7 @@ const Dashboard = () => {
           salaries={salaries}
           salary={salary}
           account={account}
-        >
-        </MainContent>
+        ></MainContent>
       </div>
     </div>
   );
