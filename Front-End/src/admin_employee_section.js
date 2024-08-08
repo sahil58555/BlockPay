@@ -248,6 +248,20 @@ const Dashboard = () => {
             margin-bottom: 10px;
           }
 
+          .add-employee-csv-btn {
+            width: 132px;
+            height: 30px;
+            background: #003366;
+            border: 1px;
+            color: #fff;
+            border-radius: 4px;
+            padding: 6px, 11.97px, 6px, 13px
+            cursor: pointer;
+            margin-bottom: 10px;
+            margin-left: 8px;
+          }
+
+
           .update-employee-btn {
             width: 141px;
             height: 30px;

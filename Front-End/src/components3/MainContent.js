@@ -16,6 +16,7 @@ import domain from "../domain";
 import axios from "axios";
 import { logout } from "../utils/sidebarClick";
 import getRandomInt from "../utils/randomno";
+import CSVReader from "react-csv-reader";
 
 const MainContent = ({ logo, children }) => {
   const navigate = useNavigate();
@@ -45,6 +46,39 @@ const MainContent = ({ logo, children }) => {
     const num = Number(lastChar);
 
     return num % 2 == 0 ? Emp2 : Emp3;
+  };
+
+  const handleCSVUpload = async (data) => {
+    // Assuming 'data' is the CSV data received from CSVReader
+    // Prepare the data for your API request
+    data.pop();
+
+    const result = data.slice(1).map((row) => {
+      return {
+        name: row[1],
+        account: row[2],
+        salary: row[3],
+        payStartDate: row[4],
+        payEndDate: row[5],
+        department: row[6],
+        designation: row[7],
+      };
+    });
+
+    const token = localStorage.getItem("token");
+    await axios.post(
+      `${domain}/admin/csv-to-emp`,
+      {
+        data: result,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    window.location.href = "/admin-employee-section";
   };
 
   const getAllEmployees = async () => {
@@ -126,6 +160,16 @@ const MainContent = ({ logo, children }) => {
           <div className="employees-buttons">
             <button className="add-employee-btn" onClick={addEmployee}>
               + Add Employee
+            </button>
+            <button className="add-employee-csv-btn">
+              <CSVReader
+                cssClass="csv-reader-input"
+                cssLabelClass="font-bold m-2"
+                onFileLoaded={handleCSVUpload}
+                onError={console.error}
+                inputId="csv-reader"
+                inputStyle={{ color: "red" }}
+              />
             </button>
           </div>
         </div>

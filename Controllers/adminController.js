@@ -2,7 +2,7 @@ const BigNumber = require("bignumber.js");
 
 const Company = require("../models/companySchema");
 const Employee = require("../models/employeeSchema");
-const Aadhaar = require("../models/aadhaarSchema")
+const Aadhaar = require("../models/aadhaarSchema");
 const web3Utils = require("../solidity/web3");
 const { sendEmail } = require("../utils/nodemailer");
 const { generateRandomPassword } = require("../utils/random");
@@ -79,6 +79,122 @@ const addEmployee = async (req, res) => {
     });
   } catch (err) {
     res.status(404).json({
+      status: "failed",
+      message: err.message,
+    });
+  }
+};
+
+const addEmployeeByCsv = async ({ body }) => {
+  try {
+    const {
+      account,
+      salary,
+      payStartDate,
+      payEndDate,
+      name,
+      department,
+      designation,
+      companyName,
+    } = body;
+
+    // TODO
+    const username = "user@example.com";
+    const password = "123";
+
+    const employee = new Employee({
+      name,
+      salary,
+      department,
+      designation,
+      password,
+      account,
+    });
+
+    const companyObj = await Company.findOne({ companyName }).populate("emps");
+
+    const hasEmployee = companyObj.emps.filter((emp) => emp.name === name);
+
+    if (hasEmployee.length > 0) {
+      return res.status(404).json({
+        status: "failed",
+        message: "Employee already exist",
+      });
+    }
+
+    await employee.save();
+
+    await web3Utils.addEmployee(
+      companyObj.deployAccount,
+      account,
+      salary,
+      payStartDate,
+      payEndDate
+    );
+
+    // Add the new employee to the company's employees array
+    companyObj.emps.push(employee);
+
+    // Save the updated company document
+    await companyObj.save();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const bulkEmployeesByCsv = async (req, res) => {
+  try {
+    const companyName = req.user.companyName;
+    const data = req.body.data; // Assume this is an array of employee data
+    console.log(data);
+    // Create an array of promises for adding employees
+    const promises = data.map((employeeData) => {
+      const {
+        account,
+        salary,
+        payStartDate,
+        payEndDate,
+        name,
+        department,
+        designation,
+      } = employeeData;
+      
+      return addEmployeeByCsv({
+        body: {
+          account,
+          salary,
+          payStartDate,
+          payEndDate,
+          name,
+          department,
+          designation,
+          companyName,
+        },
+      });
+    });
+
+    // Wait for all promises to settle
+    const results = await Promise.allSettled(promises);
+
+    // Process results and count successes and failures
+    const successfulAdditions = results.filter(
+      (result) => result.status === "fulfilled"
+    ).length;
+    const failedAdditions = results.filter(
+      (result) => result.status === "rejected"
+    ).length;
+
+    res.status(200).json({
+      status: "success",
+      message: `Successfully added ${successfulAdditions} employees. ${failedAdditions} additions failed.`,
+      details: results
+        .map((result) =>
+          result.status === "rejected" ? { reason: result.reason } : null
+        )
+        .filter((result) => result !== null),
+    });
+  } catch (err) {
+    res.status(500).json({
       status: "failed",
       message: err.message,
     });
@@ -214,5 +330,6 @@ module.exports = {
   updateEmployee,
   payAllEmployees,
   totalSalaryToBePaid,
-  getAllEmployees
+  getAllEmployees,
+  bulkEmployeesByCsv,
 };
